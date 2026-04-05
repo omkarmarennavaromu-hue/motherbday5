@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Cinematic Luxury Memory Film | Maa's Tribute</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0705;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Import premium fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a130c;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 10px;
+        }
+
+        /* Glassmorphism base */
+        .glass-card {
+            background: rgba(255, 245, 235, 0.08);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(212,175,55,0.2);
+        }
+
+        /* Sections */
+        section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 5rem 2rem;
+            overflow-x: hidden;
+        }
+
+        .curtain-section {
+            background: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .golden-line-left, .golden-line-right {
+            position: fixed;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #d4af37, #f9e2a1, #b8860b);
+            z-index: 200;
+            box-shadow: 0 0 15px gold;
+            transition: transform 1.8s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .golden-line-left {
+            left: 0;
+            transform: translateX(-100%);
+        }
+        .golden-line-right {
+            right: 0;
+            transform: translateX(100%);
+        }
+        .curtain-open .golden-line-left {
+            transform: translateX(0);
+        }
+        .curtain-open .golden-line-right {
+            transform: translateX(0);
+        }
+
+        /* Typewriter container */
+        .typewriter-text {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.8rem, 5vw, 3.2rem);
+            color: #f7e5c2;
+            text-align: center;
+            text-shadow: 0 0 15px rgba(212,175,55,0.6);
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.96);
+            transition: opacity 1s ease, transform 1s ease;
+            z-index: 20;
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 2rem;
+            border-radius: 50px;
+        }
+        .typewriter-reveal {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Particle canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* 3D MEMORY WALK */
+        .depth-scene {
+            display: flex;
+            flex-direction: column;
+            gap: 6rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .memory-card-3d {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            perspective: 1200px;
+            transition: transform 0.2s ease-out;
+        }
+        .memory-img-wrapper {
+            width: 85%;
+            max-width: 550px;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5), 0 0 0 6px rgba(212,175,55,0.2);
+            transition: all 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform: translateZ(0) scale(0.95);
+            filter: blur(4px);
+        }
+        .memory-img-wrapper img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 8s ease-out;
+            transform: scale(1.08);
+        }
+        .memory-card-3d.in-view .memory-img-wrapper {
+            transform: translateZ(30px) scale(1.02);
+            filter: blur(0px);
+            box-shadow: 0 40px 60px rgba(0,0,0,0.6), 0 0 30px rgba(212,175,55,0.5);
+        }
+        .memory-card-3d.in-view img {
+            transform: scale(1.12);
+        }
+        .caption-3d {
+            text-align: center;
+            margin-top: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #eeddbb;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
+            display: inline-block;
+            padding: 0.5rem 2rem;
+            border-radius: 60px;
+            backdrop-filter: blur(8px);
+        }
+
+        /* TIMELINE SECTION */
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            width: 100%;
+        }
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: linear-gradient(to bottom, #d4af37, #f9e2a1, #d4af37);
+            transform: translateX(-50%);
+            box-shadow: 0 0 15px gold;
+            z-index: 1;
+        }
+        .timeline-item {
+            width: 45%;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            position: relative;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            z-index: 2;
+        }
+        .timeline-item.left {
+            left: 0;
+            transform: translateX(-80px);
+        }
+        .timeline-item.right {
+            left: 55%;
+            transform: translateX(80px);
+        }
+        .timeline-item.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .timeline-card {
+            background: rgba(20, 15, 10, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            padding: 1.8rem;
+            border: 1px solid rgba(212,175,55,0.5);
+            box-shadow: 0 20px 30px -10px rgba(0,0,0,0.5);
+        }
+        .timeline-card p {
+            font-size: 1.2rem;
+            color: #f7e9d7;
+            font-weight: 500;
+        }
+
+        /* FLOATING CARDS */
+        .floating-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .float-card {
+            width: 260px;
+            background: rgba(30, 22, 18, 0.65);
+            backdrop-filter: blur(10px);
+            border-radius: 28px;
+            padding: 1.8rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(212,175,55,0.4);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+            animation: floatSoft 5s infinite ease-in-out;
+            transform-origin: center;
+        }
+        @keyframes floatSoft {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(0.5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .float-card p {
+            font-size: 1rem;
+            color: #f0dfb6;
+            font-weight: 500;
+        }
+        .float-card.flip-active {
+            animation: none;
+            transform: scale(1.05) rotateY(180deg);
+            background: rgba(212,175,55,0.2);
+            border-color: #d4af37;
+            box-shadow: 0 0 45px rgba(212,175,55,0.8);
+        }
+
+        /* LETTER SECTION */
+        .letter-container {
+            max-width: 800px;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(15px);
+            padding: 3rem;
+            border-radius: 48px;
+            border: 1px solid rgba(212,175,55,0.5);
+        }
+        .letter-line {
+            font-size: 1.3rem;
+            line-height: 2rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(30px) blur(8px);
+            transition: all 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+            font-family: 'Playfair Display', serif;
+            color: #fff0da;
+        }
+        .letter-line.revealed {
+            opacity: 1;
+            transform: translateY(0) blur(0);
+        }
+
+        /* EMOTIONAL PAUSE */
+        .pause-section {
+            background: #fdf6ed;
+            text-align: center;
+        }
+        .pause-text {
+            font-size: 2rem;
+            font-weight: 300;
+            font-family: 'Playfair Display', serif;
+            color: #b87c2e;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        /* FINALE */
+        .finale-section {
+            background: radial-gradient(circle at center, #2a1f12, #030201);
+        }
+        .glow-heading {
+            font-size: 4rem;
+            font-family: 'Playfair Display', serif;
+            color: #e9c679;
+            text-shadow: 0 0 20px gold, 0 0 40px #b8860b;
+            margin-bottom: 2rem;
+        }
+        .luxury-btn {
+            background: linear-gradient(135deg, #d4af37, #b8860b);
+            border: none;
+            padding: 1rem 3rem;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1f1309;
+            border-radius: 60px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .luxury-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 35px gold;
+        }
+        .final-message {
+            margin-top: 2rem;
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            color: #ffd966;
+            text-align: center;
+            opacity: 0;
+            transition: all 0.5s;
+        }
+
+        /* Responsive */
+        @media (max-width: 800px) {
+            .timeline-item { width: 90%; left: 5% !important; margin: 1rem 0; }
+            .timeline-line { left: 10px; }
+            .timeline-item.right, .timeline-item.left { transform: translateX(0); left: 5%; }
+            .glow-heading { font-size: 2.2rem; }
+            .letter-line { font-size: 1rem; }
+        }
+        .golden-vignette {
+            position: fixed;
+            top:0;left:0;width:100%;height:100%;
+            pointer-events: none;
+            box-shadow: inset 0 0 120px rgba(212,175,55,0.2);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+<div class="golden-vignette"></div>
+<canvas id="particle-canvas"></canvas>
+
+<!-- Curtain lines -->
+<div class="golden-line-left"></div>
+<div class="golden-line-right"></div>
+
+<!-- SECTION 1: CURTAIN OPENING -->
+<section class="curtain-section" id="curtainSec" style="justify-content:center;">
+    <div class="typewriter-text" id="typewriterMsg">“Maa… today, you are not opening a website.”<br>“You are opening my memories.”</div>
+</section>
+
+<!-- SECTION 2: 3D MEMORY WALK -->
+<section id="depthSection">
+    <div class="depth-scene">
+        <div class="memory-card-3d" data-caption="You were always behind the camera, but today this memory is only about you.">
+            <div class="memory-img-wrapper"><img src="https://i.ibb.co/gMs8WPYn/Snapchat-1791933352.jpg" alt="memory1"></div>
+            <div class="caption-3d"></div>
+        </div>
+        <div class="memory-card-3d" data-caption="In this moment, you smiled… not knowing I would remember it forever.">
+            <div class="memory-img-wrapper"><img src="https://i.ibb.co/p6yhR78x/Snapchat-381999221.jpg" alt="memory2"></div>
+            <div class="caption-3d"></div>
+        </div>
+        <div class="memory-card-3d" data-caption="Every small day with you becomes a priceless memory for me.">
+            <div class="memory-img-wrapper"><img src="https://i.ibb.co/0yKGgYpc/IMG-20250428-WA0028.jpg" alt="memory3"></div>
+            <div class="caption-3d"></div>
+        </div>
+        <div class="memory-card-3d" data-caption="You never asked for anything, yet you gave me everything.">
+            <div class="memory-img-wrapper"><img src="https://i.ibb.co/Vp3wsRjw/IMG-20230201-WA0003-0.jpg" alt="memory4"></div>
+            <div class="caption-3d"></div>
+        </div>
+        <div class="memory-card-3d" data-caption="This photo holds a thousand emotions I can never explain in words.">
+            <div class="memory-img-wrapper"><img src="https://i.ibb.co/jvvk4nt7/IMG-20250428-WA0030.jpg" alt="memory5"></div>
+            <div class="caption-3d"></div>
+        </div>
+        <div class="memory-card-3d" data-caption="No matter how big I grow, I will always be your little child.">
+            <div class="memory-img-wrapper"><img src="https://i.ibb.co/0j8Wpjby/Screenshot-20250716-131428.jpg" alt="memory6"></div>
+            <div class="caption-3d"></div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 3: TIMELINE -->
+<section style="background: linear-gradient(145deg, #110d0a, #1e1712);">
+    <h2 style="font-family:'Playfair Display'; color:#e9c679; margin-bottom:3rem; text-align:center;">A Timeline of What You Did For Me Without Realizing</h2>
+    <div class="timeline-container">
+        <div class="timeline-line"></div>
+        <div class="timeline-item left"><div class="timeline-card"><p>✨ You stayed awake when I was sick, every single night.</p></div></div>
+        <div class="timeline-item right"><div class="timeline-card"><p>📚 You sacrificed your desires to buy my books.</p></div></div>
+        <div class="timeline-item left"><div class="timeline-card"><p>💛 You celebrated my smallest achievements as if they were the biggest.</p></div></div>
+        <div class="timeline-item right"><div class="timeline-card"><p>🌙 You never let me see your tears, only your strength.</p></div></div>
+        <div class="timeline-item left"><div class="timeline-card"><p>🤍 You believed in me when I didn't believe in myself.</p></div></div>
+        <div class="timeline-item right"><div class="timeline-card"><p>🌟 You gave me roots and wings, my everything, Maa.</p></div></div>
+    </div>
+</section>
+
+<!-- SECTION 4: FLOATING GLASS CARDS (click flip) -->
+<section style="background: radial-gradient(ellipse at center, #241e17, #0a0704);">
+    <h2 style="font-family:'Playfair Display'; color:#dbb65b; margin-bottom:2rem;">Memories etched in gold</h2>
+    <div class="floating-grid" id="floatingGrid">
+        <div class="float-card" data-text="You were always behind the camera, but today this memory is only about you."><p>📸 Behind the camera</p></div>
+        <div class="float-card" data-text="In this moment, you smiled… not knowing I would remember it forever."><p>😊 That smile</p></div>
+        <div class="float-card" data-text="Every small day with you becomes a priceless memory for me."><p>🌸 Small days, big love</p></div>
+        <div class="float-card" data-text="You never asked for anything, yet you gave me everything."><p>🎁 Silent sacrifices</p></div>
+        <div class="float-card" data-text="This photo holds a thousand emotions I can never explain in words."><p>❤️ Thousand emotions</p></div>
+        <div class="float-card" data-text="No matter how big I grow, I will always be your little child."><p>🍃 Forever your child</p></div>
+    </div>
+</section>
+
+<!-- SECTION 5: LETTER -->
+<section>
+    <div class="letter-container" id="letterContainer">
+        <h2 style="font-family:'Playfair Display'; color:#f0cf8a; margin-bottom:2rem; text-align:center;">A Letter I Never Said Properly</h2>
+        <div class="letter-line">My Dearest Maa,</div>
+        <div class="letter-line">Every heartbeat I have carries your name in silence.</div>
+        <div class="letter-line">You gave me the world without asking for a single star in return.</div>
+        <div class="letter-line">Your love is the golden thread in every chapter of my life.</div>
+        <div class="letter-line">I'm sorry for the moments I didn't say 'I love you' enough.</div>
+        <div class="letter-line">But today, I promise to spend forever making you proud.</div>
+        <div class="letter-line">Thank you for being my home, my strength, my everything.</div>
+        <div class="letter-line">With all my heart, Your Child.</div>
+    </div>
+</section>
+
+<!-- SECTION 6: EMOTIONAL PAUSE -->
+<section class="pause-section" id="pauseSection">
+    <div class="pause-text" id="pauseText">Take a deep breath, Maa… the surprise is not over yet.</div>
+</section>
+
+<!-- SECTION 7: GRAND FINALE -->
+<section class="finale-section" id="finaleSection">
+    <div class="glow-heading">I will make you proud.</div>
+    <button class="luxury-btn" id="surpriseBtn">Click here, Maa</button>
+    <div id="finalMessage" class="final-message"></div>
+</section>
+
+<script>
+    (function(){
+        // ---------- CURTAIN + TYPEWRITER ----------
+        document.body.classList.add('curtain-open');
+        const curtainMsg = document.getElementById('typewriterMsg');
+        setTimeout(() => {
+            curtainMsg.classList.add('typewriter-reveal');
+        }, 300);
+        setTimeout(() => {
+            window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+        }, 3200);
+
+        // PARTICLE ENGINE (golden dust)
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3 + 0.2;
+                this.alpha = Math.random() * 0.6 + 0.2;
+                this.color = `rgba(212, 175, 55, ${this.alpha})`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+        for(let i=0;i<150;i++) particles.push(new Particle());
+        function animateParticles() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // SECTION 2: 3D depth + scroll parallax + blur-focus + captions
+        const depthCards = document.querySelectorAll('.memory-card-3d');
+        depthCards.forEach((card, idx) => {
+            const captionText = card.getAttribute('data-caption');
+            const capDiv = card.querySelector('.caption-3d');
+            if(capDiv) capDiv.innerText = captionText;
+        });
+        function handleDepthScroll() {
+            depthCards.forEach(card => {
+                const rect = card.getBoundingClientRect();
+                const isVisible = rect.top < window.innerHeight*0.8 && rect.bottom > 100;
+                if(isVisible) {
+                    card.classList.add('in-view');
+                    const wrapper = card.querySelector('.memory-img-wrapper');
+                    let scaleVal = 1 + (window.scrollY * 0.0005);
+                    if(scaleVal>1.08) scaleVal=1.08;
+                    wrapper.style.transform = `translateZ(${Math.min(40, window.scrollY*0.03)}px) scale(${0.98+scaleVal*0.02})`;
+                } else {
+                    card.classList.remove('in-view');
+                }
+            });
+        }
+        window.addEventListener('scroll', handleDepthScroll);
+        handleDepthScroll();
+
+        // TIMELINE ANIMATION (slide)
+        const timelineItems = document.querySelectorAll('.timeline-item');
+        function checkTimeline() {
+            timelineItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                if(rect.top < window.innerHeight-120) {
+                    item.classList.add('show');
+                }
+            });
+        }
+        window.addEventListener('scroll', checkTimeline);
+        checkTimeline();
+
+        // FLOATING CARDS 3D FLIP ON CLICK
+        const floatCards = document.querySelectorAll('.float-card');
+        floatCards.forEach(card => {
+            const originalText = card.getAttribute('data-text');
+            const innerP = card.querySelector('p');
+            let flipped = false;
+            card.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if(!flipped) {
+                    card.style.transition = 'transform 0.5s, background 0.3s';
+                    card.style.transform = 'rotateY(180deg)';
+                    const newP = document.createElement('p');
+                    newP.innerText = originalText;
+                    newP.style.transform = 'rotateY(180deg)';
+                    newP.style.fontSize = '0.9rem';
+                    newP.style.fontWeight = 'bold';
+                    newP.style.color = '#ffecb3';
+                    card.innerHTML = '';
+                    card.appendChild(newP);
+                    card.classList.add('flip-active');
+                    flipped = true;
+                } else {
+                    card.style.transform = 'rotateY(0deg)';
+                    card.innerHTML = `<p>${innerP.innerText}</p>`;
+                    card.classList.remove('flip-active');
+                    flipped = false;
+                }
+                setTimeout(() => {
+                    card.style.transform = '';
+                }, 500);
+            });
+        });
+
+        // LETTER CINEMATIC REVEAL (scroll)
+        const letterLines = document.querySelectorAll('.letter-line');
+        function revealLetters() {
+            const letterBox = document.getElementById('letterContainer');
+            const rectLetter = letterBox.getBoundingClientRect();
+            if(rectLetter.top < window.innerHeight-100) {
+                letterLines.forEach((line, idx) => {
+                    setTimeout(() => {
+                        line.classList.add('revealed');
+                    }, idx * 150);
+                });
+                window.removeEventListener('scroll', revealLetters);
+            }
+        }
+        window.addEventListener('scroll', revealLetters);
+        
+        // EMOTIONAL PAUSE auto scroll after text appears
+        const pauseTextDiv = document.getElementById('pauseText');
+        const pauseSection = document.getElementById('pauseSection');
+        let pauseTriggered = false;
+        function handlePause() {
+            const rect = pauseSection.getBoundingClientRect();
+            if(rect.top < window.innerHeight-100 && !pauseTriggered) {
+                pauseTextDiv.style.opacity = '1';
+                pauseTriggered = true;
+                setTimeout(() => {
+                    const finale = document.getElementById('finaleSection');
+                    finale.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 2500);
+                window.removeEventListener('scroll', handlePause);
+            }
+        }
+        window.addEventListener('scroll', handlePause);
+        
+        // GRAND FINALE SURPRISE BUTTON
+        const surpriseBtn = document.getElementById('surpriseBtn');
+        const finalMsgDiv = document.getElementById('finalMessage');
+        surpriseBtn.addEventListener('click', () => {
+            // Golden particles burst
+            for(let i=0;i<180;i++) {
+                const burstParticle = document.createElement('div');
+                burstParticle.style.position = 'fixed';
+                burstParticle.style.width = '8px';
+                burstParticle.style.height = '8px';
+                burstParticle.style.background = 'radial-gradient(circle, #ffd966, #b8860b)';
+                burstParticle.style.borderRadius = '50%';
+                burstParticle.style.left = '50%';
+                burstParticle.style.top = '50%';
+                burstParticle.style.pointerEvents = 'none';
+                burstParticle.style.zIndex = '10000';
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 5 + Math.random() * 12;
+                let vx = Math.cos(angle) * velocity;
+                let vy = Math.sin(angle) * velocity;
+                let x = window.innerWidth/2, y = window.innerHeight/2;
+                document.body.appendChild(burstParticle);
+                let opacity = 1;
+                function animateBurst() {
+                    x += vx;
+                    y += vy;
+                    vx *= 0.98;
+                    vy *= 0.98;
+                    opacity -= 0.02;
+                    burstParticle.style.left = x + 'px';
+                    burstParticle.style.top = y + 'px';
+                    burstParticle.style.opacity = opacity;
+                    if(opacity <= 0) burstParticle.remove();
+                    else requestAnimationFrame(animateBurst);
+                }
+                requestAnimationFrame(animateBurst);
+            }
+            // Radial light burst effect
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.background = 'radial-gradient(circle, rgba(255,215,0,0.6) 0%, rgba(255,215,0,0) 80%)';
+            overlay.style.pointerEvents = 'none';
+            overlay.style.zIndex = '9999';
+            document.body.appendChild(overlay);
+            setTimeout(() => overlay.remove(), 800);
+            // Soft screen shake
+            document.body.style.transform = 'translate(3px, 2px)';
+            setTimeout(() => document.body.style.transform = 'translate(-2px, -1px)', 50);
+            setTimeout(() => document.body.style.transform = 'translate(1px, -1px)', 100);
+            setTimeout(() => document.body.style.transform = 'translate(0,0)', 150);
+            // Final message
+            finalMsgDiv.style.opacity = '1';
+            finalMsgDiv.innerHTML = 'Happy Birthday ❤️ I love you';
+            finalMsgDiv.style.fontSize = '3rem';
+            finalMsgDiv.style.textShadow = '0 0 30px gold';
+        });
+
+        // Ensure all images are loaded and content no missing text, also apply ken burns persistent for each image scroll effect
+        // manual initial captions
+        document.querySelectorAll('.memory-card-3d .caption-3d').forEach((cap, idx) => {
+            const texts = [
+                "You were always behind the camera, but today this memory is only about you.",
+                "In this moment, you smiled… not knowing I would remember it forever.",
+                "Every small day with you becomes a priceless memory for me.",
+                "You never asked for anything, yet you gave me everything.",
+                "This photo holds a thousand emotions I can never explain in words.",
+                "No matter how big I grow, I will always be your little child."
+            ];
+            if(texts[idx]) cap.innerText = texts[idx];
+        });
+        // timeline extra check
+        for(let i=0; i<timelineItems.length; i++) {
+            if(timelineItems[i].getBoundingClientRect().top < window.innerHeight-100) timelineItems[i].classList.add('show');
+        }
+    })();
+</script>
+</body>
+</html>
